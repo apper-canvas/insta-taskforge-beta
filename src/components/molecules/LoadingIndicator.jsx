@@ -1,6 +1,8 @@
+import React from 'react';
 import { motion } from 'framer-motion';
+import PropTypes from 'prop-types';
 
-const SkeletonLoader = ({ count = 3, type = 'card' }) => {
+const LoadingIndicator = ({ count = 3, type = 'card' }) => {
   const skeletonItems = Array.from({ length: count }, (_, index) => index);
 
   if (type === 'table') {
@@ -51,4 +53,9 @@ const SkeletonLoader = ({ count = 3, type = 'card' }) => {
   );
 };
 
-export default SkeletonLoader;
+LoadingIndicator.propTypes = {
+  count: PropTypes.number,
+  type: PropTypes.oneOf(['card', 'table']),
+};
+
+export default LoadingIndicator;
