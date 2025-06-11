@@ -4,6 +4,7 @@ import ModalBase from '@/components/molecules/ModalBase';
 import FormField from '@/components/molecules/FormField';
 import ApperIcon from '@/components/ApperIcon';
 import Button from '@/components/atoms/Button';
+import Label from '@/components/atoms/Label';
 
 const ProjectForm = ({ isOpen, onClose, onSubmit, project }) => {
   const [formData, setFormData] = useState({
