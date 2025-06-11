@@ -1,10 +1,10 @@
 import React from 'react';
-import { AnimatePresence } from 'framer-motion';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import PropTypes from 'prop-types';
+import { AnimatePresence, motion } from 'framer-motion';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+
 import KanbanColumnHeader from '@/components/molecules/KanbanColumnHeader';
 import TaskCard from '@/components/molecules/TaskCard';
-
 const KanbanBoard = ({ columns, tasks, onDragEnd, onEditTask, onDeleteTask, getStoryTitle, getPriorityColor }) => {
   return (
     <DragDropContext onDragEnd={onDragEnd}>
