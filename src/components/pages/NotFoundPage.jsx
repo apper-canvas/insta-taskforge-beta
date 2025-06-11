@@ -35,13 +35,13 @@ const NotFoundPage = () => {
           The page you're looking for doesn't exist or has been moved.
         </p>
 
-<div className="space-y-4">
+        <div className="space-y-4">
           <Button
             onClick={() => navigate('/dashboard')}
             className="w-full bg-primary text-white hover:bg-primary/90"
             icon={ApperIcon.bind(null, { name: 'Home' })}
           >
-            Go to Visionware Dashboard
+            Go to Dashboard
           </Button>
 
           <Button

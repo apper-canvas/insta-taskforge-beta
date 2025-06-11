@@ -15,10 +15,10 @@ function Login() {
   }, [isInitialized]);
   
   return (
-<div className="flex min-h-screen items-center justify-center bg-surface-50">
+    <div className="flex min-h-screen items-center justify-center bg-surface-50">
       <div className="w-full max-w-md space-y-8 p-6 bg-white rounded-lg shadow-md">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-surface-800">Welcome Back to Visionware</h1>
+          <h1 className="text-3xl font-bold text-surface-800">Welcome Back to TaskForge</h1>
           <p className="mt-2 text-surface-600">Sign in to your account</p>
         </div>
         <div id="authentication" className="min-h-[400px]" />
