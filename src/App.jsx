@@ -11,7 +11,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/" element={<Layout />}>
-            {routeArray.map(route => (
+{routeArray.map(route => (
               <Route
                 key={route.id}
                 path={route.path}
@@ -19,9 +19,9 @@ function App() {
               />
             ))}
           </Route>
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
-      </div>
+</div>
       
       <ToastContainer
         position="top-right"
