@@ -15,12 +15,12 @@ const Layout = () => {
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:bg-white lg:border-r lg:border-surface-200">
         {/* Logo */}
-        <div className="flex items-center px-6 py-5 border-b border-surface-200">
+<div className="flex items-center px-6 py-5 border-b border-surface-200">
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
               <ApperIcon name="Zap" className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-surface-900">TaskForge</span>
+            <span className="text-xl font-bold text-surface-900">Visionware</span>
           </div>
         </div>
 
@@ -46,12 +46,12 @@ const Layout = () => {
       </aside>
 
       {/* Mobile Header */}
-      <div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-surface-200">
+<div className="lg:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-surface-200">
         <div className="flex items-center space-x-3">
           <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
             <ApperIcon name="Zap" className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-surface-900">TaskForge</span>
+          <span className="text-xl font-bold text-surface-900">Visionware</span>
         </div>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -79,12 +79,12 @@ const Layout = () => {
               transition={{ type: "spring", damping: 30, stiffness: 300 }}
               className="lg:hidden fixed left-0 top-0 h-full w-64 bg-white z-50 shadow-xl"
             >
-              <div className="p-6 border-b border-surface-200">
+<div className="p-6 border-b border-surface-200">
                 <div className="flex items-center space-x-3">
                   <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                     <ApperIcon name="Zap" className="w-5 h-5 text-white" />
                   </div>
-                  <span className="text-xl font-bold text-surface-900">TaskForge</span>
+                  <span className="text-xl font-bold text-surface-900">Visionware</span>
                 </div>
               </div>
               <nav className="p-4 space-y-1">
@@ -115,10 +115,10 @@ const Layout = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Content Header */}
         <header className="flex-shrink-0 bg-white border-b border-surface-200 px-6 py-4">
-          <div className="flex items-center justify-between">
+<div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-surface-900">
-                {activeRoute?.label || 'TaskForge'}
+                {activeRoute?.label || 'Visionware'}
               </h1>
               <p className="text-sm text-surface-600 mt-1">
                 Manage your projects efficiently
