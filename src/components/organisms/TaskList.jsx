@@ -1,9 +1,9 @@
 import React from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import PropTypes from 'prop-types';
-import TaskCard from '@/components/molecules/TaskCard'; // Reusing TaskCard, but it will render differently
-import ApperIcon from '@/components/ApperIcon';
 
+import ApperIcon from '@/components/ApperIcon';
+import Button from '@/components/atoms/Button';
 const TaskList = ({ tasks, onEditTask, onDeleteTask, getStoryTitle, getProjectName, getPriorityColor }) => {
   return (
     <div className="space-y-4">
@@ -30,14 +30,18 @@ const TaskList = ({ tasks, onEditTask, onDeleteTask, getStoryTitle, getProjectNa
                   )}
                 </div>
                 <div className="flex items-center space-x-1 ml-4">
-                  <TaskCard
-                    task={task}
-                    onEdit={onEditTask}
-                    onDelete={onDeleteTask}
-                    getStoryTitle={getStoryTitle}
-                    getPriorityColor={getPriorityColor}
-                    type="list" // Indicate list type rendering
-                  />
+                  <Button
+                    onClick={() => onEditTask(task)}
+                    className="p-2 text-surface-500 hover:text-surface-700 hover:bg-surface-100 rounded transition-colors"
+                  >
+                    <ApperIcon name="Edit2" className="w-4 h-4" />
+                  </Button>
+                  <Button
+                    onClick={() => onDeleteTask(task.id)}
+                    className="p-2 text-surface-500 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                  >
+                    <ApperIcon name="Trash2" className="w-4 h-4" />
+                  </Button>
                 </div>
               </div>
 
@@ -46,7 +50,7 @@ const TaskList = ({ tasks, onEditTask, onDeleteTask, getStoryTitle, getProjectNa
                   <span className="text-surface-500">Status:</span>
                   <p className="font-medium text-surface-900 capitalize">
                     {task.status?.replace('-', ' ') || 'To Do'}
-</p>
+                  </p>
                 </div>
                 <div>
                   <span className="text-surface-500">Story:</span>
@@ -54,7 +58,6 @@ const TaskList = ({ tasks, onEditTask, onDeleteTask, getStoryTitle, getProjectNa
                     {getStoryTitle(task.user_story_id || task.userStoryId)}
                   </p>
                 </div>
-</div>
                 <div>
                   <span className="text-surface-500">Project:</span>
                   <p className="font-medium text-surface-900 break-words">
@@ -72,7 +75,7 @@ const TaskList = ({ tasks, onEditTask, onDeleteTask, getStoryTitle, getProjectNa
               <div className="flex items-center justify-between text-xs text-surface-500 pt-4 mt-4 border-t border-surface-200">
                 <span>ID: {task.id.slice(-8)}</span>
                 {task.deadline && (
-<span>Due: {new Date(task.deadline).toLocaleDateString()}</span>
+                  <span>Due: {new Date(task.deadline).toLocaleDateString()}</span>
                 )}
                 {(task.time_logged || task.timeLogged) > 0 && (
                   <span>Time logged: {task.time_logged || task.timeLogged}h</span>
