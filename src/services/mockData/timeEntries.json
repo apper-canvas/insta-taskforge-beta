@@ -1,0 +1,114 @@
+[
+  {
+    "id": "1",
+    "taskId": "1",
+    "userId": "user1",
+    "duration": 3.5,
+    "date": 1700400000000,
+    "description": "Worked on form validation logic and error handling"
+  },
+  {
+    "id": "2",
+    "taskId": "1",
+    "userId": "user1", 
+    "duration": 3.0,
+    "date": 1700486400000,
+    "description": "Completed project creation form styling and responsiveness"
+  },
+  {
+    "id": "3",
+    "taskId": "2",
+    "userId": "user2",
+    "duration": 2.0,
+    "date": 1700500000000,
+    "description": "Implemented add/remove goals functionality"
+  },
+  {
+    "id": "4",
+    "taskId": "2",
+    "userId": "user2",
+    "duration": 2.0,
+    "date": 1700586400000,
+    "description": "Added goals validation and state management"
+  },
+  {
+    "id": "5",
+    "taskId": "3",
+    "userId": "user3",
+    "duration": 4.0,
+    "date": 1700600000000,
+    "description": "Designed modal layout and component structure"
+  },
+  {
+    "id": "6",
+    "taskId": "3",
+    "userId": "user3",
+    "duration": 1.5,
+    "date": 1700686400000,
+    "description": "Implemented modal animations and transitions"
+  },
+  {
+    "id": "7",
+    "taskId": "4",
+    "userId": "user4",
+    "duration": 1.5,
+    "date": 1700700000000,
+    "description": "Started work on acceptance criteria component"
+  },
+  {
+    "id": "8",
+    "taskId": "4",
+    "userId": "user4",
+    "duration": 1.5,
+    "date": 1700786400000,
+    "description": "Continued development of criteria management"
+  },
+  {
+    "id": "9",
+    "taskId": "5",
+    "userId": "user5",
+    "duration": 4.0,
+    "date": 1700800000000,
+    "description": "Set up drag and drop functionality for Kanban board"
+  },
+  {
+    "id": "10",
+    "taskId": "5",
+    "userId": "user5",
+    "duration": 4.0,
+    "date": 1700886400000,
+    "description": "Implemented column management and task card styling"
+  },
+  {
+    "id": "11",
+    "taskId": "7",
+    "userId": "user6",
+    "duration": 3.5,
+    "date": 1699100000000,
+    "description": "Created product card components and grid layout"
+  },
+  {
+    "id": "12",
+    "taskId": "7",
+    "userId": "user6",
+    "duration": 3.5,
+    "date": 1699186400000,
+    "description": "Implemented responsive design and mobile optimization"
+  },
+  {
+    "id": "13",
+    "taskId": "8",
+    "userId": "user7",
+    "duration": 2.5,
+    "date": 1699200000000,
+    "description": "Built search input component with debouncing"
+  },
+  {
+    "id": "14",
+    "taskId": "8",
+    "userId": "user7",
+    "duration": 2.0,
+    "date": 1699286400000,
+    "description": "Added search filtering and result highlighting"
+  }
+]

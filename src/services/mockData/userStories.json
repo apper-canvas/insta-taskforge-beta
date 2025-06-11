@@ -1,0 +1,77 @@
+[
+  {
+    "id": "1",
+    "projectId": "1",
+    "title": "As a project manager, I want to create and manage projects so that I can organize team work effectively",
+    "description": "The project manager needs a comprehensive interface to create new projects, set up project details, define scope and goals, and manage project lifecycle.",
+    "acceptanceCriteria": [
+      "User can create a new project with name, description, and scope",
+      "User can add and remove project goals",
+      "User can update project status (active, completed, on-hold, cancelled)",
+      "User can view project overview with key metrics"
+    ],
+    "priority": "high",
+    "status": "completed",
+    "createdAt": 1700000000000
+  },
+  {
+    "id": "2",
+    "projectId": "1",
+    "title": "As a developer, I want to create user stories so that I can define feature requirements clearly",
+    "description": "Developers need to be able to create detailed user stories with acceptance criteria to properly define what needs to be built.",
+    "acceptanceCriteria": [
+      "User can create user stories with title and description",
+      "User can add multiple acceptance criteria",
+      "User can set story priority (low, medium, high)",
+      "User can assign stories to projects"
+    ],
+    "priority": "high",
+    "status": "in-progress",
+    "createdAt": 1700100000000
+  },
+  {
+    "id": "3",
+    "projectId": "1",
+    "title": "As a team member, I want to break down stories into tasks so that work can be tracked granularly",
+    "description": "Team members need to create specific tasks from user stories to make work manageable and trackable.",
+    "acceptanceCriteria": [
+      "User can create tasks linked to user stories",
+      "User can assign tasks to team members",
+      "User can set task deadlines and priorities",
+      "User can update task status through drag-and-drop"
+    ],
+    "priority": "high",
+    "status": "todo",
+    "createdAt": 1700200000000
+  },
+  {
+    "id": "4",
+    "projectId": "2",
+    "title": "As a customer, I want to browse products easily so that I can find what I'm looking for quickly",
+    "description": "The mobile app needs an intuitive product browsing experience with search and filtering capabilities.",
+    "acceptanceCriteria": [
+      "App displays products in grid/list view",
+      "User can search products by name or category",
+      "User can filter products by price, rating, and availability",
+      "App shows product images, prices, and ratings clearly"
+    ],
+    "priority": "high",
+    "status": "in-progress",
+    "createdAt": 1699000000000
+  },
+  {
+    "id": "5",
+    "projectId": "2",
+    "title": "As a customer, I want to make secure payments so that I can complete purchases confidently",
+    "description": "The payment system must be secure, reliable, and support multiple payment methods.",
+    "acceptanceCriteria": [
+      "App supports credit/debit cards and digital wallets",
+      "Payment information is encrypted and secure",
+      "User receives confirmation after successful payment",
+      "App handles payment failures gracefully"
+    ],
+    "priority": "high",
+    "status": "todo",
+    "createdAt": 1699100000000
+  }
+]

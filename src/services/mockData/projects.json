@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "name": "TaskForge Platform Development",
+    "description": "Building a comprehensive project management platform for development teams",
+    "scope": "Full-stack web application with real-time collaboration features",
+    "goals": [
+      "Create intuitive user interface for project management",
+      "Implement real-time collaboration features",
+      "Build robust backend API with authentication",
+      "Integrate with third-party tools and services"
+    ],
+    "status": "active",
+    "createdAt": 1700000000000,
+    "updatedAt": 1700000000000
+  },
+  {
+    "id": "2",
+    "name": "E-commerce Mobile App",
+    "description": "Native mobile application for online shopping with advanced features",
+    "scope": "iOS and Android applications with payment integration",
+    "goals": [
+      "Design modern mobile user experience",
+      "Implement secure payment processing",
+      "Build inventory management system",
+      "Create customer support features"
+    ],
+    "status": "active",
+    "createdAt": 1699000000000,
+    "updatedAt": 1699500000000
+  },
+  {
+    "id": "3",
+    "name": "Data Analytics Dashboard",
+    "description": "Business intelligence dashboard for data visualization and reporting",
+    "scope": "Web-based dashboard with interactive charts and reports",
+    "goals": [
+      "Integrate multiple data sources",
+      "Create customizable visualization components",
+      "Implement real-time data updates",
+      "Build automated reporting system"
+    ],
+    "status": "completed",
+    "createdAt": 1698000000000,
+    "updatedAt": 1699000000000
+  },
+  {
+    "id": "4",
+    "name": "API Gateway Service",
+    "description": "Microservices API gateway for handling authentication and routing",
+    "scope": "Backend service with load balancing and security features",
+    "goals": [
+      "Implement OAuth 2.0 authentication",
+      "Build rate limiting and throttling",
+      "Create service discovery mechanism",
+      "Add comprehensive logging and monitoring"
+    ],
+    "status": "on-hold",
+    "createdAt": 1697000000000,
+    "updatedAt": 1698000000000
+  }
+]
