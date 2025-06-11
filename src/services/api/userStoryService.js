@@ -84,7 +84,12 @@ export const userStoryService = {
       
       updateableFields.forEach(field => {
         if (storyData[field] !== undefined) {
-          filteredData[field] = storyData[field];
+          // Convert string IDs to integers for lookup fields
+          if (field === 'project_id' && typeof storyData[field] === 'string') {
+            filteredData[field] = parseInt(storyData[field]);
+          } else {
+            filteredData[field] = storyData[field];
+          }
         }
       });
 
@@ -139,7 +144,12 @@ export const userStoryService = {
       
       updateableFields.forEach(field => {
         if (storyData[field] !== undefined) {
-          filteredData[field] = storyData[field];
+          // Convert string IDs to integers for lookup fields
+          if (field === 'project_id' && typeof storyData[field] === 'string') {
+            filteredData[field] = parseInt(storyData[field]);
+          } else {
+            filteredData[field] = storyData[field];
+          }
         }
       });
 
@@ -218,7 +228,7 @@ export const userStoryService = {
     }
   },
 
-  // Get stories by project
+  // Get user stories by project
   async getByProject(projectId) {
     try {
       const params = {
@@ -232,12 +242,12 @@ export const userStoryService = {
       };
       return await this.getAll(params);
     } catch (error) {
-      console.error("Error fetching stories by project:", error);
+      console.error("Error fetching user stories by project:", error);
       throw error;
     }
   },
 
-  // Get stories by status
+  // Get user stories by status
   async getByStatus(status) {
     try {
       const params = {
@@ -251,7 +261,26 @@ export const userStoryService = {
       };
       return await this.getAll(params);
     } catch (error) {
-      console.error("Error fetching stories by status:", error);
+      console.error("Error fetching user stories by status:", error);
+      throw error;
+    }
+  },
+
+  // Get user stories by priority
+  async getByPriority(priority) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "priority",
+            operator: "ExactMatch",
+            values: [priority]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching user stories by priority:", error);
       throw error;
     }
   },
@@ -277,7 +306,20 @@ export const userStoryService = {
 
   // Update status
   async updateStatus(id, status) {
-return this.update(id, { status });
+    return this.update(id, { status });
+  },
+
+  // Get user stories with tasks
+  async getWithTasks() {
+    try {
+      const stories = await this.getAll();
+      // Note: In a real implementation, you might want to fetch tasks here
+      // For now, we'll return stories and let the consumer fetch tasks separately
+      return stories;
+    } catch (error) {
+      console.error("Error fetching user stories with tasks:", error);
+      throw error;
+    }
   }
 };
 

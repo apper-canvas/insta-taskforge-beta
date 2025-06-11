@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import PropTypes from 'prop-types';
 import ApperIcon from '@/components/ApperIcon';
-import Card from './Card';
+import Card from '@/components/molecules/Card';
 import Button from '@/components/atoms/Button';
 
 const ProjectCard = ({ project, onEdit, onDelete, index }) => {
@@ -22,9 +22,9 @@ const ProjectCard = ({ project, onEdit, onDelete, index }) => {
       transition={{ delay: index * 0.1 }}
     >
       <div className="flex items-start justify-between mb-4">
-        <div className="flex-1 min-w-0">
+<div className="flex-1 min-w-0">
           <h3 className="text-lg font-semibold text-surface-900 break-words">
-            {project.name}
+            {project.Name || project.name}
           </h3>
           <p className="text-sm text-surface-600 mt-1 break-words">
             {project.description}
@@ -38,9 +38,9 @@ const ProjectCard = ({ project, onEdit, onDelete, index }) => {
             whileTap={{ scale: 0.9 }}
           >
             <ApperIcon name="Edit2" className="w-4 h-4" />
-          </Button>
+</Button>
           <Button
-            onClick={() => onDelete(project.id)}
+            onClick={() => onDelete(project.id || project.Id)}
             className="p-2 text-surface-500 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
@@ -84,10 +84,10 @@ const ProjectCard = ({ project, onEdit, onDelete, index }) => {
           </div>
         )}
 
-        <div className="flex items-center justify-between text-xs text-surface-500 pt-3 border-t border-surface-200">
-          <span>Created {new Date(project.createdAt).toLocaleDateString()}</span>
-          {project.updatedAt && project.updatedAt !== project.createdAt && (
-            <span>Updated {new Date(project.updatedAt).toLocaleDateString()}</span>
+<div className="flex items-center justify-between text-xs text-surface-500 pt-3 border-t border-surface-200">
+          <span>Created {new Date(project.CreatedOn || project.createdAt || Date.now()).toLocaleDateString()}</span>
+          {(project.ModifiedOn || project.updatedAt) && (project.ModifiedOn !== project.CreatedOn || project.updatedAt !== project.createdAt) && (
+            <span>Updated {new Date(project.ModifiedOn || project.updatedAt || Date.now()).toLocaleDateString()}</span>
           )}
         </div>
       </div>
@@ -96,15 +96,19 @@ const ProjectCard = ({ project, onEdit, onDelete, index }) => {
 };
 
 ProjectCard.propTypes = {
-  project: PropTypes.shape({
-    id: PropTypes.string.isRequired,
-    name: PropTypes.string.isRequired,
+project: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    Id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    name: PropTypes.string,
+    Name: PropTypes.string,
     description: PropTypes.string,
     status: PropTypes.string,
     scope: PropTypes.string,
     goals: PropTypes.arrayOf(PropTypes.string),
     createdAt: PropTypes.number,
     updatedAt: PropTypes.number,
+    CreatedOn: PropTypes.string,
+    ModifiedOn: PropTypes.string,
   }).isRequired,
   onEdit: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,

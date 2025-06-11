@@ -1,62 +1,152 @@
 [
-{
+  {
     "id": "1",
-    "name": "Visionware Platform Development",
-    "description": "Building a comprehensive project management platform for development teams",
-    "scope": "Full-stack web application with real-time collaboration features",
+    "name": "E-Commerce Platform Redesign",
+    "description": "Complete overhaul of the existing e-commerce platform with modern UI/UX and improved performance",
+    "scope": "Frontend redesign, backend optimization, mobile responsiveness, and payment gateway integration",
     "goals": [
-      "Create intuitive user interface for project management",
-      "Implement real-time collaboration features",
-      "Build robust backend API with authentication",
-      "Integrate with third-party tools and services"
+      "Improve user experience and conversion rates",
+      "Reduce page load times by 40%",
+      "Implement responsive design for all devices",
+      "Integrate new payment methods"
     ],
     "status": "active",
-    "createdAt": 1700000000000,
-    "updatedAt": 1700000000000
+    "createdAt": 1699920000000,
+    "updatedAt": 1700524800000
   },
   {
     "id": "2",
-    "name": "E-commerce Mobile App",
-    "description": "Native mobile application for online shopping with advanced features",
-    "scope": "iOS and Android applications with payment integration",
+    "name": "Mobile App Development",
+    "description": "Native mobile application for iOS and Android with real-time notifications and offline capabilities",
+    "scope": "Cross-platform mobile development, API integration, push notifications, and offline data sync",
     "goals": [
-      "Design modern mobile user experience",
-      "Implement secure payment processing",
-      "Build inventory management system",
-      "Create customer support features"
+      "Launch on both App Store and Google Play",
+      "Achieve 4.5+ star rating",
+      "Support offline functionality",
+      "Implement real-time chat features"
     ],
     "status": "active",
-    "createdAt": 1699000000000,
-    "updatedAt": 1699500000000
+    "createdAt": 1699833600000,
+    "updatedAt": 1700438400000
   },
   {
     "id": "3",
-    "name": "Data Analytics Dashboard",
-    "description": "Business intelligence dashboard for data visualization and reporting",
-    "scope": "Web-based dashboard with interactive charts and reports",
+    "name": "API Microservices Migration",
+    "description": "Migrate monolithic backend to microservices architecture for better scalability and maintainability",
+    "scope": "Service decomposition, containerization, API gateway setup, and monitoring implementation",
     "goals": [
-      "Integrate multiple data sources",
-      "Create customizable visualization components",
-      "Implement real-time data updates",
-      "Build automated reporting system"
+      "Improve system scalability",
+      "Reduce deployment time by 60%",
+      "Implement independent service scaling",
+      "Set up comprehensive monitoring"
     ],
-    "status": "completed",
-    "createdAt": 1698000000000,
-    "updatedAt": 1699000000000
+    "status": "active",
+    "createdAt": 1699747200000,
+    "updatedAt": 1700352000000
   },
   {
     "id": "4",
-    "name": "API Gateway Service",
-    "description": "Microservices API gateway for handling authentication and routing",
-    "scope": "Backend service with load balancing and security features",
+    "name": "Data Analytics Dashboard",
+    "description": "Business intelligence dashboard with real-time analytics and reporting capabilities",
+    "scope": "Data pipeline setup, visualization components, real-time updates, and user role management",
     "goals": [
-      "Implement OAuth 2.0 authentication",
-      "Build rate limiting and throttling",
-      "Create service discovery mechanism",
-      "Add comprehensive logging and monitoring"
+      "Provide real-time business insights",
+      "Create customizable dashboards",
+      "Implement automated reporting",
+      "Support multiple data sources"
+    ],
+    "status": "completed",
+    "createdAt": 1698537600000,
+    "updatedAt": 1699660800000
+  },
+  {
+    "id": "5",
+    "name": "Security Enhancement Project",
+    "description": "Comprehensive security audit and implementation of advanced security measures",
+    "scope": "Security assessment, vulnerability fixes, authentication improvements, and compliance implementation",
+    "goals": [
+      "Achieve SOC 2 compliance",
+      "Implement multi-factor authentication",
+      "Fix all critical vulnerabilities",
+      "Set up security monitoring"
     ],
     "status": "on-hold",
-    "createdAt": 1697000000000,
-    "updatedAt": 1698000000000
+    "createdAt": 1699574400000,
+    "updatedAt": 1700179200000
+  },
+  {
+    "id": "6",
+    "name": "Customer Support Portal",
+    "description": "Self-service customer support portal with ticketing system and knowledge base",
+    "scope": "Portal development, ticketing system, knowledge base, chat integration, and admin dashboard",
+    "goals": [
+      "Reduce support ticket volume by 30%",
+      "Improve customer satisfaction scores",
+      "Implement automated responses",
+      "Create comprehensive FAQ system"
+    ],
+    "status": "active",
+    "createdAt": 1699488000000,
+    "updatedAt": 1700092800000
+  },
+  {
+    "id": "7",
+    "name": "DevOps Pipeline Automation",
+    "description": "Automate CI/CD pipelines with comprehensive testing and deployment strategies",
+    "scope": "Pipeline setup, automated testing, deployment automation, and monitoring integration",
+    "goals": [
+      "Achieve zero-downtime deployments",
+      "Reduce deployment time to under 10 minutes",
+      "Implement automated rollback capabilities",
+      "Set up comprehensive testing coverage"
+    ],
+    "status": "active",
+    "createdAt": 1699401600000,
+    "updatedAt": 1700006400000
+  },
+  {
+    "id": "8",
+    "name": "Inventory Management System",
+    "description": "Advanced inventory tracking system with barcode scanning and automated reordering",
+    "scope": "Inventory tracking, barcode integration, automated alerts, reporting, and supplier management",
+    "goals": [
+      "Reduce inventory costs by 20%",
+      "Implement automated reordering",
+      "Provide real-time inventory tracking",
+      "Integrate with existing ERP systems"
+    ],
+    "status": "completed",
+    "createdAt": 1698278400000,
+    "updatedAt": 1699401600000
+  },
+  {
+    "id": "9",
+    "name": "Machine Learning Recommendation Engine",
+    "description": "AI-powered recommendation system for personalized user experiences",
+    "scope": "ML model development, data preprocessing, API integration, and performance optimization",
+    "goals": [
+      "Increase user engagement by 25%",
+      "Implement personalized recommendations",
+      "Achieve 85% recommendation accuracy",
+      "Support real-time recommendations"
+    ],
+    "status": "active",
+    "createdAt": 1699315200000,
+    "updatedAt": 1699920000000
+  },
+  {
+    "id": "10",
+    "name": "Cloud Infrastructure Migration",
+    "description": "Migration of existing infrastructure to cloud-native solutions with auto-scaling capabilities",
+    "scope": "Cloud architecture design, data migration, service containerization, and monitoring setup",
+    "goals": [
+      "Reduce infrastructure costs by 35%",
+      "Implement auto-scaling capabilities",
+      "Achieve 99.9% uptime SLA",
+      "Set up disaster recovery procedures"
+    ],
+    "status": "active",
+    "createdAt": 1699228800000,
+    "updatedAt": 1699833600000
   }
 ]

@@ -87,6 +87,12 @@ export const timeEntryService = {
           // Convert string IDs to integers for lookup fields
           if ((field === 'task_id' || field === 'user_id') && typeof entryData[field] === 'string') {
             filteredData[field] = parseInt(entryData[field]);
+          } else if (field === 'duration' && typeof entryData[field] === 'string') {
+            // Ensure duration is a decimal number
+            filteredData[field] = parseFloat(entryData[field]);
+          } else if (field === 'date' && entryData[field]) {
+            // Ensure date is in proper DateTime format
+            filteredData[field] = new Date(entryData[field]).toISOString();
           } else {
             filteredData[field] = entryData[field];
           }
@@ -147,6 +153,12 @@ export const timeEntryService = {
           // Convert string IDs to integers for lookup fields
           if ((field === 'task_id' || field === 'user_id') && typeof entryData[field] === 'string') {
             filteredData[field] = parseInt(entryData[field]);
+          } else if (field === 'duration' && typeof entryData[field] === 'string') {
+            // Ensure duration is a decimal number
+            filteredData[field] = parseFloat(entryData[field]);
+          } else if (field === 'date' && entryData[field]) {
+            // Ensure date is in proper DateTime format
+            filteredData[field] = new Date(entryData[field]).toISOString();
           } else {
             filteredData[field] = entryData[field];
           }
@@ -274,18 +286,46 @@ export const timeEntryService = {
           {
             fieldName: "date",
             operator: "GreaterThanOrEqualTo",
-            values: [startDate]
+            values: [new Date(startDate).toISOString()]
           },
           {
             fieldName: "date",
             operator: "LessThanOrEqualTo",
-            values: [endDate]
+            values: [new Date(endDate).toISOString()]
           }
         ]
       };
       return await this.getAll(params);
     } catch (error) {
       console.error("Error fetching time entries by date range:", error);
+      throw error;
+    }
+  },
+
+  // Get total time logged for a task
+  async getTotalTimeForTask(taskId) {
+    try {
+      const entries = await this.getByTask(taskId);
+      return entries.reduce((total, entry) => total + (entry.duration || 0), 0);
+    } catch (error) {
+      console.error("Error calculating total time for task:", error);
+      throw error;
+    }
+  },
+
+  // Get total time logged by user
+  async getTotalTimeForUser(userId, startDate = null, endDate = null) {
+    try {
+      let entries;
+      if (startDate && endDate) {
+        entries = await this.getByDateRange(startDate, endDate);
+        entries = entries.filter(entry => parseInt(entry.user_id) === parseInt(userId));
+      } else {
+        entries = await this.getByUser(userId);
+      }
+      return entries.reduce((total, entry) => total + (entry.duration || 0), 0);
+    } catch (error) {
+      console.error("Error calculating total time for user:", error);
       throw error;
     }
   }

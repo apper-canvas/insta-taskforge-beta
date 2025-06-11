@@ -16,13 +16,13 @@ const TaskForm = ({ isOpen, onClose, onSubmit, task, userStories = [], projects 
     priority: 'medium'
   });
 
-  useEffect(() => {
+useEffect(() => {
     if (task) {
       setFormData({
         title: task.title || '',
         description: task.description || '',
-        userStoryId: task.userStoryId || '',
-        projectId: task.projectId || '',
+        userStoryId: task.user_story_id || task.userStoryId || '',
+        projectId: task.project_id || task.projectId || '',
         assignee: task.assignee || '',
         status: task.status || 'todo',
         deadline: task.deadline ? new Date(task.deadline).toISOString().split('T')[0] : '',
@@ -45,31 +45,32 @@ const TaskForm = ({ isOpen, onClose, onSubmit, task, userStories = [], projects 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-  };
+};
 
   const handleStoryChange = (storyId) => {
-    const story = userStories.find(s => s.id === storyId);
+    const story = userStories.find(s => (s.id || s.Id) === storyId);
     setFormData(prev => ({
       ...prev,
       userStoryId: storyId,
-      projectId: story ? story.projectId : prev.projectId
+      projectId: story ? (story.project_id || story.projectId) : prev.projectId
     }));
   };
-
-  const handleSubmit = (e) => {
+const handleSubmit = (e) => {
     e.preventDefault();
     const submitData = {
       ...formData,
-      deadline: formData.deadline ? new Date(formData.deadline).getTime() : null
+      user_story_id: formData.userStoryId,
+      project_id: formData.projectId,
+      deadline: formData.deadline ? new Date(formData.deadline).toISOString() : null
     };
-    onSubmit(submitData);
+onSubmit(submitData);
   };
 
-  const projectOptions = projects.map(p => ({ value: p.id, label: p.name }));
+  const projectOptions = projects.map(p => ({ value: p.Id || p.id, label: p.Name || p.name }));
   const availableStories = formData.projectId
-    ? userStories.filter(story => story.projectId === formData.projectId)
+    ? userStories.filter(story => (story.project_id || story.projectId) === formData.projectId)
     : userStories;
-  const storyOptions = availableStories.map(s => ({ value: s.id, label: s.title }));
+  const storyOptions = availableStories.map(s => ({ value: s.Id || s.id, label: s.title }));
   const priorityOptions = [
     { value: 'low', label: 'Low' },
     { value: 'medium', label: 'Medium' },

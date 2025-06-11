@@ -46,18 +46,19 @@ const TaskList = ({ tasks, onEditTask, onDeleteTask, getStoryTitle, getProjectNa
                   <span className="text-surface-500">Status:</span>
                   <p className="font-medium text-surface-900 capitalize">
                     {task.status?.replace('-', ' ') || 'To Do'}
-                  </p>
+</p>
                 </div>
                 <div>
                   <span className="text-surface-500">Story:</span>
                   <p className="font-medium text-surface-900 break-words">
-                    {getStoryTitle(task.userStoryId)}
+                    {getStoryTitle(task.user_story_id || task.userStoryId)}
                   </p>
                 </div>
+</div>
                 <div>
                   <span className="text-surface-500">Project:</span>
                   <p className="font-medium text-surface-900 break-words">
-                    {getProjectName(task.projectId)}
+                    {getProjectName(task.project_id || task.projectId)}
                   </p>
                 </div>
                 {task.assignee && (
@@ -71,10 +72,10 @@ const TaskList = ({ tasks, onEditTask, onDeleteTask, getStoryTitle, getProjectNa
               <div className="flex items-center justify-between text-xs text-surface-500 pt-4 mt-4 border-t border-surface-200">
                 <span>ID: {task.id.slice(-8)}</span>
                 {task.deadline && (
-                  <span>Due: {new Date(task.deadline).toLocaleDateString()}</span>
+<span>Due: {new Date(task.deadline).toLocaleDateString()}</span>
                 )}
-                {task.timeLogged > 0 && (
-                  <span>Time logged: {task.timeLogged}h</span>
+                {(task.time_logged || task.timeLogged) > 0 && (
+                  <span>Time logged: {task.time_logged || task.timeLogged}h</span>
                 )}
               </div>
             </div>

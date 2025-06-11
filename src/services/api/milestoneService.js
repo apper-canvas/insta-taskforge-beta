@@ -87,6 +87,9 @@ export const milestoneService = {
           // Convert string IDs to integers for lookup fields
           if (field === 'ProjectId' && typeof milestoneData[field] === 'string') {
             filteredData[field] = parseInt(milestoneData[field]);
+          } else if (field === 'DueDate' && milestoneData[field]) {
+            // Ensure date is in proper DateTime format
+            filteredData[field] = new Date(milestoneData[field]).toISOString();
           } else {
             filteredData[field] = milestoneData[field];
           }
@@ -147,6 +150,9 @@ export const milestoneService = {
           // Convert string IDs to integers for lookup fields
           if (field === 'ProjectId' && typeof milestoneData[field] === 'string') {
             filteredData[field] = parseInt(milestoneData[field]);
+          } else if (field === 'DueDate' && milestoneData[field]) {
+            // Ensure date is in proper DateTime format
+            filteredData[field] = new Date(milestoneData[field]).toISOString();
           } else {
             filteredData[field] = milestoneData[field];
           }
@@ -262,6 +268,87 @@ export const milestoneService = {
       return await this.getAll(params);
     } catch (error) {
       console.error("Error fetching milestones by status:", error);
+      throw error;
+    }
+  },
+
+  // Get upcoming milestones (due within next 30 days)
+  async getUpcoming(days = 30) {
+    try {
+      const futureDate = new Date();
+      futureDate.setDate(futureDate.getDate() + days);
+      
+      const params = {
+        where: [
+          {
+            fieldName: "DueDate",
+            operator: "LessThanOrEqualTo",
+            values: [futureDate.toISOString()]
+          },
+          {
+            fieldName: "DueDate",
+            operator: "GreaterThanOrEqualTo",
+            values: [new Date().toISOString()]
+          },
+          {
+            fieldName: "Status",
+            operator: "NotEqualTo",
+            values: ["Completed", "Cancelled"]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching upcoming milestones:", error);
+      throw error;
+    }
+  },
+
+  // Get overdue milestones
+  async getOverdue() {
+    try {
+      const now = new Date().toISOString();
+      const params = {
+        where: [
+          {
+            fieldName: "DueDate",
+            operator: "LessThan",
+            values: [now]
+          },
+          {
+            fieldName: "Status",
+            operator: "NotEqualTo",
+            values: ["Completed", "Cancelled"]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching overdue milestones:", error);
+      throw error;
+    }
+  },
+
+  // Update status
+  async updateStatus(id, status) {
+    return this.update(id, { Status: status });
+  },
+
+  // Get milestone completion percentage for a project
+  async getProjectCompletionStats(projectId) {
+    try {
+      const milestones = await this.getByProject(projectId);
+      const completed = milestones.filter(m => m.Status === 'Completed').length;
+      const total = milestones.length;
+      
+      return {
+        total,
+        completed,
+        percentage: total > 0 ? Math.round((completed / total) * 100) : 0,
+        remaining: total - completed
+      };
+    } catch (error) {
+      console.error("Error calculating project completion stats:", error);
       throw error;
     }
   }

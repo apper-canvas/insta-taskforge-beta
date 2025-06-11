@@ -3,112 +3,240 @@
     "id": "1",
     "taskId": "1",
     "userId": "user1",
-    "duration": 3.5,
-    "date": 1700400000000,
-    "description": "Worked on form validation logic and error handling"
+    "duration": 2.5,
+    "date": 1701216000000,
+    "description": "Created initial wireframes for login page and user flow diagrams"
   },
   {
     "id": "2",
-    "taskId": "1",
-    "userId": "user1", 
+    "taskId": "1", 
+    "userId": "user1",
     "duration": 3.0,
-    "date": 1700486400000,
-    "description": "Completed project creation form styling and responsiveness"
+    "date": 1701302400000,
+    "description": "Refined mockups based on stakeholder feedback and added password recovery flow"
   },
   {
     "id": "3",
-    "taskId": "2",
-    "userId": "user2",
-    "duration": 2.0,
-    "date": 1700500000000,
-    "description": "Implemented add/remove goals functionality"
+    "taskId": "1",
+    "userId": "user1", 
+    "duration": 3.0,
+    "date": 1701388800000,
+    "description": "Finalized authentication flow designs and created interactive prototype"
   },
   {
     "id": "4",
     "taskId": "2",
     "userId": "user2",
-    "duration": 2.0,
-    "date": 1700586400000,
-    "description": "Added goals validation and state management"
+    "duration": 4.0,
+    "date": 1701216000000,
+    "description": "Set up authentication middleware and JWT token configuration"
   },
   {
     "id": "5",
-    "taskId": "3",
-    "userId": "user3",
-    "duration": 4.0,
-    "date": 1700600000000,
-    "description": "Designed modal layout and component structure"
+    "taskId": "2",
+    "userId": "user2",
+    "duration": 4.5,
+    "date": 1701302400000,
+    "description": "Implemented login endpoint with input validation and error handling"
   },
   {
     "id": "6",
-    "taskId": "3",
-    "userId": "user3",
-    "duration": 1.5,
-    "date": 1700686400000,
-    "description": "Implemented modal animations and transitions"
+    "taskId": "2",
+    "userId": "user2",
+    "duration": 3.5,
+    "date": 1701388800000,
+    "description": "Added unit tests for authentication API and fixed edge cases"
   },
   {
     "id": "7",
-    "taskId": "4",
-    "userId": "user4",
-    "duration": 1.5,
-    "date": 1700700000000,
-    "description": "Started work on acceptance criteria component"
+    "taskId": "3",
+    "userId": "user3",
+    "duration": 3.0,
+    "date": 1701129600000,
+    "description": "Researched bcrypt implementation and set up password hashing utility"
   },
   {
     "id": "8",
-    "taskId": "4",
-    "userId": "user4",
-    "duration": 1.5,
-    "date": 1700786400000,
-    "description": "Continued development of criteria management"
+    "taskId": "3",
+    "userId": "user3",
+    "duration": 2.5,
+    "date": 1701216000000,
+    "description": "Integrated password encryption in user registration and login flows"
   },
   {
     "id": "9",
-    "taskId": "5",
-    "userId": "user5",
-    "duration": 4.0,
-    "date": 1700800000000,
-    "description": "Set up drag and drop functionality for Kanban board"
+    "taskId": "3",
+    "userId": "user3",
+    "duration": 1.0,
+    "date": 1701302400000,
+    "description": "Added password strength validation and security improvements"
   },
   {
     "id": "10",
-    "taskId": "5",
-    "userId": "user5",
-    "duration": 4.0,
-    "date": 1700886400000,
-    "description": "Implemented column management and task card styling"
+    "taskId": "4",
+    "userId": "user4",
+    "duration": 5.0,
+    "date": 1701216000000,
+    "description": "Created responsive product grid layout with CSS Grid and Flexbox"
   },
   {
     "id": "11",
-    "taskId": "7",
-    "userId": "user6",
-    "duration": 3.5,
-    "date": 1699100000000,
-    "description": "Created product card components and grid layout"
+    "taskId": "4",
+    "userId": "user4",
+    "duration": 4.5,
+    "date": 1701302400000,
+    "description": "Implemented product search functionality with debounced input"
   },
   {
     "id": "12",
-    "taskId": "7",
-    "userId": "user6",
-    "duration": 3.5,
-    "date": 1699186400000,
-    "description": "Implemented responsive design and mobile optimization"
+    "taskId": "4",
+    "userId": "user4",
+    "duration": 6.0,
+    "date": 1701388800000,
+    "description": "Added filtering options and pagination for product catalog"
   },
   {
     "id": "13",
-    "taskId": "8",
-    "userId": "user7",
-    "duration": 2.5,
-    "date": 1699200000000,
-    "description": "Built search input component with debouncing"
+    "taskId": "7",
+    "userId": "user5",
+    "duration": 4.0,
+    "date": 1701043200000,
+    "description": "Designed mobile navigation patterns and created component library"
   },
   {
     "id": "14",
+    "taskId": "7",
+    "userId": "user5",
+    "duration": 3.5,
+    "date": 1701129600000,
+    "description": "Implemented bottom tab navigation with React Navigation"
+  },
+  {
+    "id": "15",
+    "taskId": "7",
+    "userId": "user5",
+    "duration": 2.5,
+    "date": 1701216000000,
+    "description": "Added side menu drawer and tested navigation flows on different devices"
+  },
+  {
+    "id": "16",
     "taskId": "8",
+    "userId": "user6",
+    "duration": 3.0,
+    "date": 1701302400000,
+    "description": "Set up Firebase project and configured push notification certificates"
+  },
+  {
+    "id": "17",
+    "taskId": "8",
+    "userId": "user6",
+    "duration": 4.0,
+    "date": 1701388800000,
+    "description": "Implemented push notification handling for iOS and Android"
+  },
+  {
+    "id": "18",
+    "taskId": "8",
+    "userId": "user6",
+    "duration": 1.5,
+    "date": 1701475200000,
+    "description": "Added notification permission handling and user preferences"
+  },
+  {
+    "id": "19",
+    "taskId": "10",
     "userId": "user7",
+    "duration": 6.0,
+    "date": 1700956800000,
+    "description": "Researched API gateway solutions and created Kong configuration"
+  },
+  {
+    "id": "20",
+    "taskId": "10",
+    "userId": "user7",
+    "duration": 5.0,
+    "date": 1701043200000,
+    "description": "Set up Kong with authentication plugins and rate limiting"
+  },
+  {
+    "id": "21",
+    "taskId": "10",
+    "userId": "user7",
+    "duration": 3.0,
+    "date": 1701129600000,
+    "description": "Configured routing rules and tested API gateway with sample services"
+  },
+  {
+    "id": "22",
+    "taskId": "11",
+    "userId": "user8",
+    "duration": 2.5,
+    "date": 1701302400000,
+    "description": "Created Dockerfile for user service with multi-stage build optimization"
+  },
+  {
+    "id": "23",
+    "taskId": "11",
+    "userId": "user8",
     "duration": 2.0,
-    "date": 1699286400000,
-    "description": "Added search filtering and result highlighting"
+    "date": 1701388800000,
+    "description": "Set up Docker Compose for local development environment"
+  },
+  {
+    "id": "24",
+    "taskId": "11",
+    "userId": "user8",
+    "duration": 2.0,
+    "date": 1701475200000,
+    "description": "Added health checks and environment variable configuration"
+  },
+  {
+    "id": "25",
+    "taskId": "13",
+    "userId": "user9",
+    "duration": 6.0,
+    "date": 1700611200000,
+    "description": "Designed dashboard wireframes and created responsive grid system"
+  },
+  {
+    "id": "26",
+    "taskId": "13",
+    "userId": "user9",
+    "duration": 7.0,
+    "date": 1700697600000,
+    "description": "Implemented drag-and-drop widget system with React DnD"
+  },
+  {
+    "id": "27",
+    "taskId": "13",
+    "userId": "user9",
+    "duration": 5.0,
+    "date": 1700784000000,
+    "description": "Added widget customization options and user preference persistence"
+  },
+  {
+    "id": "28",
+    "taskId": "14",
+    "userId": "user10",
+    "duration": 8.0,
+    "date": 1700697600000,
+    "description": "Set up WebSocket connections and real-time data streaming"
+  },
+  {
+    "id": "29",
+    "taskId": "14",
+    "userId": "user10",
+    "duration": 7.5,
+    "date": 1700784000000,
+    "description": "Implemented Chart.js integration with real-time data updates"
+  },
+  {
+    "id": "30",
+    "taskId": "14",
+    "userId": "user10",
+    "duration": 7.0,
+    "date": 1700870400000,
+    "description": "Added chart animations and performance optimizations for large datasets"
   }
 ]

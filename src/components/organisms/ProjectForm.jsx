@@ -15,10 +15,10 @@ const ProjectForm = ({ isOpen, onClose, onSubmit, project }) => {
     status: 'active'
   });
 
-  useEffect(() => {
+useEffect(() => {
     if (project) {
       setFormData({
-        name: project.name || '',
+        name: project.Name || project.name || '',
         description: project.description || '',
         scope: project.scope || '',
         goals: project.goals && project.goals.length > 0 ? project.goals : [''],
@@ -57,12 +57,15 @@ const ProjectForm = ({ isOpen, onClose, onSubmit, project }) => {
     }
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = (e) => {
     e.preventDefault();
     const filteredGoals = formData.goals.filter(goal => goal.trim() !== '');
     onSubmit({
-      ...formData,
-      goals: filteredGoals
+      Name: formData.name,
+      description: formData.description,
+      scope: formData.scope,
+      goals: filteredGoals,
+      status: formData.status
     });
   };
 

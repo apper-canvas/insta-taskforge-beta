@@ -35,8 +35,7 @@ const TaskCard = ({ task, onEdit, onDelete, getStoryTitle, getPriorityColor, dra
             </Button>
           </div>
         </div>
-
-        {task.description && (
+{task.description && (
           <p className="text-sm text-surface-600 mb-3 break-words">
             {task.description}
           </p>
@@ -46,7 +45,7 @@ const TaskCard = ({ task, onEdit, onDelete, getStoryTitle, getPriorityColor, dra
           <div className="flex items-center justify-between text-xs">
             <span className="text-surface-500">Story:</span>
             <span className="text-surface-700 break-words">
-              {getStoryTitle(task.userStoryId)}
+              {getStoryTitle(task.user_story_id || task.userStoryId)}
             </span>
           </div>
 
@@ -56,20 +55,19 @@ const TaskCard = ({ task, onEdit, onDelete, getStoryTitle, getPriorityColor, dra
               <span className="text-surface-700">{task.assignee}</span>
             </div>
           )}
-
-          {task.deadline && (
+{task.deadline && (
             <div className="flex items-center justify-between text-xs">
               <span className="text-surface-500">Due:</span>
               <span className="text-surface-700">
                 {new Date(task.deadline).toLocaleDateString()}
               </span>
             </div>
-          )}
+)}
 
-          {task.timeLogged > 0 && (
+          {(task.time_logged || task.timeLogged) > 0 && (
             <div className="flex items-center justify-between text-xs">
               <span className="text-surface-500">Time:</span>
-              <span className="text-surface-700">{task.timeLogged}h</span>
+              <span className="text-surface-700">{task.time_logged || task.timeLogged}h</span>
             </div>
           )}
         </div>
