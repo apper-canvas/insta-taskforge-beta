@@ -1,53 +1,63 @@
-import { toast } from 'react-toastify';
+// ApperClient service for user stories
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-class UserStoryService {
-  constructor() {
-    const { ApperClient } = window.ApperSDK;
-    this.apperClient = new ApperClient({
-      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-    });
-    this.tableName = 'user_story';
-    this.updateableFields = ['Name', 'project_id', 'title', 'description', 'acceptance_criteria', 'priority', 'status', 'created_at'];
-    this.allFields = ['Name', 'Tags', 'Owner', 'CreatedOn', 'CreatedBy', 'ModifiedOn', 'ModifiedBy', 'project_id', 'title', 'description', 'acceptance_criteria', 'priority', 'status', 'created_at'];
-  }
-
-  async getAll() {
+export const userStoryService = {
+  // Get all user stories
+  async getAll(params = {}) {
     try {
-      const params = {
-        fields: this.allFields,
-        orderBy: [{
-          fieldName: "created_at",
-          SortType: "DESC"
-        }]
+      await delay(300);
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // All fields for user_story table (including system fields for display)
+      const allFields = [
+        'Name', 'Tags', 'Owner', 'CreatedOn', 'CreatedBy', 'ModifiedOn', 'ModifiedBy',
+        'project_id', 'title', 'description', 'acceptance_criteria', 'priority', 'status', 'created_at'
+      ];
+
+      const queryParams = {
+        fields: allFields,
+        ...params
       };
+
+      const response = await apperClient.fetchRecords('user_story', queryParams);
       
-      const response = await this.apperClient.fetchRecords(this.tableName, params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        toast.error(response.message);
+      if (!response || !response.data) {
         return [];
       }
       
-      return response.data || [];
+      return response.data;
     } catch (error) {
       console.error("Error fetching user stories:", error);
       throw error;
     }
-  }
+  },
 
+  // Get user story by ID
   async getById(id) {
     try {
-      const params = {
-        fields: this.allFields
-      };
+      await delay(200);
       
-      const response = await this.apperClient.getRecordById(this.tableName, id, params);
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const allFields = [
+        'Name', 'Tags', 'Owner', 'CreatedOn', 'CreatedBy', 'ModifiedOn', 'ModifiedBy',
+        'project_id', 'title', 'description', 'acceptance_criteria', 'priority', 'status', 'created_at'
+      ];
+
+      const params = { fields: allFields };
+      const response = await apperClient.getRecordById('user_story', id, params);
       
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
+      if (!response || !response.data) {
+        throw new Error('User story not found');
       }
       
       return response.data;
@@ -55,42 +65,40 @@ class UserStoryService {
       console.error(`Error fetching user story with ID ${id}:`, error);
       throw error;
     }
-  }
+  },
 
+  // Create new user story (only Updateable fields)
   async create(storyData) {
     try {
-      // Filter to only include updateable fields
+      await delay(400);
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // Only include Updateable fields
+      const updateableFields = ['Name', 'Tags', 'Owner', 'project_id', 'title', 'description', 'acceptance_criteria', 'priority', 'status', 'created_at'];
       const filteredData = {};
-      this.updateableFields.forEach(field => {
-        if (storyData.hasOwnProperty(field) || 
-            (field === 'Name' && storyData.hasOwnProperty('title')) ||
-            (field === 'project_id' && storyData.hasOwnProperty('projectId')) ||
-            (field === 'created_at' && !storyData.hasOwnProperty('created_at'))) {
-          
-          if (field === 'Name' && storyData.hasOwnProperty('title')) {
-            filteredData[field] = storyData.title;
-          } else if (field === 'project_id' && storyData.hasOwnProperty('projectId')) {
-            filteredData[field] = parseInt(storyData.projectId);
-          } else if (field === 'created_at' && !storyData.hasOwnProperty('created_at')) {
-            filteredData[field] = new Date().toISOString();
-          } else if (storyData.hasOwnProperty(field)) {
-            filteredData[field] = field === 'project_id' ? parseInt(storyData[field]) : storyData[field];
-          }
+      
+      updateableFields.forEach(field => {
+        if (storyData[field] !== undefined) {
+          filteredData[field] = storyData[field];
         }
       });
 
       const params = {
         records: [filteredData]
       };
-      
-      const response = await this.apperClient.createRecord(this.tableName, params);
+
+      const response = await apperClient.createRecord('user_story', params);
       
       if (!response.success) {
         console.error(response.message);
-        toast.error(response.message);
         throw new Error(response.message);
       }
-      
+
       if (response.results) {
         const successfulRecords = response.results.filter(result => result.success);
         const failedRecords = response.results.filter(result => !result.success);
@@ -100,55 +108,52 @@ class UserStoryService {
           
           failedRecords.forEach(record => {
             record.errors?.forEach(error => {
-              toast.error(`${error.fieldLabel}: ${error.message}`);
+              throw new Error(`${error.fieldLabel}: ${error.message}`);
             });
-            if (record.message) toast.error(record.message);
+            if (record.message) throw new Error(record.message);
           });
         }
         
-        if (successfulRecords.length > 0) {
-          return successfulRecords[0].data;
-        }
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
       }
-      
-      throw new Error('No records created');
     } catch (error) {
       console.error("Error creating user story:", error);
       throw error;
     }
-  }
+  },
 
+  // Update user story (only Updateable fields)
   async update(id, storyData) {
     try {
-      // Filter to only include updateable fields
-      const filteredData = { Id: parseInt(id) };
-      this.updateableFields.forEach(field => {
-        if (storyData.hasOwnProperty(field) || 
-            (field === 'Name' && storyData.hasOwnProperty('title')) ||
-            (field === 'project_id' && storyData.hasOwnProperty('projectId'))) {
-          
-          if (field === 'Name' && storyData.hasOwnProperty('title')) {
-            filteredData[field] = storyData.title;
-          } else if (field === 'project_id' && storyData.hasOwnProperty('projectId')) {
-            filteredData[field] = parseInt(storyData.projectId);
-          } else if (storyData.hasOwnProperty(field)) {
-            filteredData[field] = field === 'project_id' ? parseInt(storyData[field]) : storyData[field];
-          }
+      await delay(350);
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // Only include Updateable fields plus Id
+      const updateableFields = ['Name', 'Tags', 'Owner', 'project_id', 'title', 'description', 'acceptance_criteria', 'priority', 'status', 'created_at'];
+      const filteredData = { Id: id };
+      
+      updateableFields.forEach(field => {
+        if (storyData[field] !== undefined) {
+          filteredData[field] = storyData[field];
         }
       });
 
       const params = {
         records: [filteredData]
       };
-      
-      const response = await this.apperClient.updateRecord(this.tableName, params);
+
+      const response = await apperClient.updateRecord('user_story', params);
       
       if (!response.success) {
         console.error(response.message);
-        toast.error(response.message);
         throw new Error(response.message);
       }
-      
+
       if (response.results) {
         const successfulUpdates = response.results.filter(result => result.success);
         const failedUpdates = response.results.filter(result => !result.success);
@@ -158,59 +163,122 @@ class UserStoryService {
           
           failedUpdates.forEach(record => {
             record.errors?.forEach(error => {
-              toast.error(`${error.fieldLabel}: ${error.message}`);
+              throw new Error(`${error.fieldLabel}: ${error.message}`);
             });
-            if (record.message) toast.error(record.message);
+            if (record.message) throw new Error(record.message);
           });
         }
         
-        if (successfulUpdates.length > 0) {
-          return successfulUpdates[0].data;
-        }
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
-      
-      throw new Error('No records updated');
     } catch (error) {
       console.error("Error updating user story:", error);
       throw error;
     }
-  }
+  },
 
+  // Delete user story
   async delete(id) {
     try {
-      const params = {
-        RecordIds: [parseInt(id)]
-      };
+      await delay(250);
       
-      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        RecordIds: [id]
+      };
+
+      const response = await apperClient.deleteRecord('user_story', params);
       
       if (!response.success) {
         console.error(response.message);
-        toast.error(response.message);
-        return false;
+        throw new Error(response.message);
       }
-      
+
       if (response.results) {
-        const successfulDeletions = response.results.filter(result => result.success);
         const failedDeletions = response.results.filter(result => !result.success);
         
         if (failedDeletions.length > 0) {
           console.error(`Failed to delete ${failedDeletions.length} records:${failedDeletions}`);
           
           failedDeletions.forEach(record => {
-            if (record.message) toast.error(record.message);
+            if (record.message) throw new Error(record.message);
           });
         }
         
-        return successfulDeletions.length > 0;
+        return true;
       }
-      
-      return false;
     } catch (error) {
       console.error("Error deleting user story:", error);
       throw error;
     }
-  }
-}
+  },
 
-export default new UserStoryService();
+  // Get stories by project
+  async getByProject(projectId) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "project_id",
+            operator: "EqualTo",
+            values: [parseInt(projectId)]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching stories by project:", error);
+      throw error;
+    }
+  },
+
+  // Get stories by status
+  async getByStatus(status) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "status",
+            operator: "ExactMatch",
+            values: [status]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching stories by status:", error);
+      throw error;
+    }
+  },
+
+  // Search user stories
+  async search(query) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "title",
+            operator: "Contains",
+            values: [query]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error searching user stories:", error);
+      throw error;
+    }
+  },
+
+  // Update status
+  async updateStatus(id, status) {
+return this.update(id, { status });
+  }
+};
+
+export default userStoryService;

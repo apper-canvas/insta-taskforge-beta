@@ -1,53 +1,63 @@
-import { toast } from 'react-toastify';
+// ApperClient service for time entries
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-class TimeEntryService {
-  constructor() {
-    const { ApperClient } = window.ApperSDK;
-    this.apperClient = new ApperClient({
-      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-    });
-    this.tableName = 'time_entry';
-    this.updateableFields = ['Name', 'duration', 'date', 'description', 'task_id', 'user_id'];
-    this.allFields = ['Name', 'Tags', 'Owner', 'CreatedOn', 'CreatedBy', 'ModifiedOn', 'ModifiedBy', 'duration', 'date', 'description', 'task_id', 'user_id'];
-  }
-
-  async getAll() {
+export const timeEntryService = {
+  // Get all time entries
+  async getAll(params = {}) {
     try {
-      const params = {
-        fields: this.allFields,
-        orderBy: [{
-          fieldName: "date",
-          SortType: "DESC"
-        }]
+      await delay(300);
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // All fields for time_entry table (including system fields for display)
+      const allFields = [
+        'Name', 'Tags', 'Owner', 'CreatedOn', 'CreatedBy', 'ModifiedOn', 'ModifiedBy',
+        'duration', 'date', 'description', 'task_id', 'user_id'
+      ];
+
+      const queryParams = {
+        fields: allFields,
+        ...params
       };
+
+      const response = await apperClient.fetchRecords('time_entry', queryParams);
       
-      const response = await this.apperClient.fetchRecords(this.tableName, params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        toast.error(response.message);
+      if (!response || !response.data) {
         return [];
       }
       
-      return response.data || [];
+      return response.data;
     } catch (error) {
       console.error("Error fetching time entries:", error);
       throw error;
     }
-  }
+  },
 
+  // Get time entry by ID
   async getById(id) {
     try {
-      const params = {
-        fields: this.allFields
-      };
+      await delay(200);
       
-      const response = await this.apperClient.getRecordById(this.tableName, id, params);
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const allFields = [
+        'Name', 'Tags', 'Owner', 'CreatedOn', 'CreatedBy', 'ModifiedOn', 'ModifiedBy',
+        'duration', 'date', 'description', 'task_id', 'user_id'
+      ];
+
+      const params = { fields: allFields };
+      const response = await apperClient.getRecordById('time_entry', id, params);
       
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
+      if (!response || !response.data) {
+        throw new Error('Time entry not found');
       }
       
       return response.data;
@@ -55,35 +65,30 @@ class TimeEntryService {
       console.error(`Error fetching time entry with ID ${id}:`, error);
       throw error;
     }
-  }
+  },
 
+  // Create new time entry (only Updateable fields)
   async create(entryData) {
     try {
-      // Filter to only include updateable fields
+      await delay(400);
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // Only include Updateable fields
+      const updateableFields = ['Name', 'Tags', 'Owner', 'duration', 'date', 'description', 'task_id', 'user_id'];
       const filteredData = {};
-      this.updateableFields.forEach(field => {
-        if (entryData.hasOwnProperty(field) || 
-            (field === 'Name' && entryData.hasOwnProperty('description')) ||
-            (field === 'task_id' && entryData.hasOwnProperty('taskId')) ||
-            (field === 'user_id' && entryData.hasOwnProperty('userId'))) {
-          
-          if (field === 'Name' && entryData.hasOwnProperty('description')) {
-            filteredData[field] = entryData.description.substring(0, 50); // Use first 50 chars of description as name
-          } else if (field === 'task_id' && entryData.hasOwnProperty('taskId')) {
-            filteredData[field] = parseInt(entryData.taskId);
-          } else if (field === 'user_id' && entryData.hasOwnProperty('userId')) {
-            filteredData[field] = parseInt(entryData.userId);
-          } else if (field === 'date' && entryData.hasOwnProperty('date')) {
-            filteredData[field] = new Date(entryData.date).toISOString();
-          } else if (entryData.hasOwnProperty(field)) {
-            const value = entryData[field];
-            if (field === 'task_id' || field === 'user_id') {
-              filteredData[field] = parseInt(value);
-            } else if (field === 'duration') {
-              filteredData[field] = parseFloat(value);
-            } else {
-              filteredData[field] = value;
-            }
+      
+      updateableFields.forEach(field => {
+        if (entryData[field] !== undefined) {
+          // Convert string IDs to integers for lookup fields
+          if ((field === 'task_id' || field === 'user_id') && typeof entryData[field] === 'string') {
+            filteredData[field] = parseInt(entryData[field]);
+          } else {
+            filteredData[field] = entryData[field];
           }
         }
       });
@@ -91,15 +96,14 @@ class TimeEntryService {
       const params = {
         records: [filteredData]
       };
-      
-      const response = await this.apperClient.createRecord(this.tableName, params);
+
+      const response = await apperClient.createRecord('time_entry', params);
       
       if (!response.success) {
         console.error(response.message);
-        toast.error(response.message);
         throw new Error(response.message);
       }
-      
+
       if (response.results) {
         const successfulRecords = response.results.filter(result => result.success);
         const failedRecords = response.results.filter(result => !result.success);
@@ -109,51 +113,42 @@ class TimeEntryService {
           
           failedRecords.forEach(record => {
             record.errors?.forEach(error => {
-              toast.error(`${error.fieldLabel}: ${error.message}`);
+              throw new Error(`${error.fieldLabel}: ${error.message}`);
             });
-            if (record.message) toast.error(record.message);
+            if (record.message) throw new Error(record.message);
           });
         }
         
-        if (successfulRecords.length > 0) {
-          return successfulRecords[0].data;
-        }
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
       }
-      
-      throw new Error('No records created');
     } catch (error) {
       console.error("Error creating time entry:", error);
       throw error;
     }
-  }
+  },
 
+  // Update time entry (only Updateable fields)
   async update(id, entryData) {
     try {
-      // Filter to only include updateable fields
-      const filteredData = { Id: parseInt(id) };
-      this.updateableFields.forEach(field => {
-        if (entryData.hasOwnProperty(field) || 
-            (field === 'Name' && entryData.hasOwnProperty('description')) ||
-            (field === 'task_id' && entryData.hasOwnProperty('taskId')) ||
-            (field === 'user_id' && entryData.hasOwnProperty('userId'))) {
-          
-          if (field === 'Name' && entryData.hasOwnProperty('description')) {
-            filteredData[field] = entryData.description.substring(0, 50);
-          } else if (field === 'task_id' && entryData.hasOwnProperty('taskId')) {
-            filteredData[field] = parseInt(entryData.taskId);
-          } else if (field === 'user_id' && entryData.hasOwnProperty('userId')) {
-            filteredData[field] = parseInt(entryData.userId);
-          } else if (field === 'date' && entryData.hasOwnProperty('date')) {
-            filteredData[field] = new Date(entryData.date).toISOString();
-          } else if (entryData.hasOwnProperty(field)) {
-            const value = entryData[field];
-            if (field === 'task_id' || field === 'user_id') {
-              filteredData[field] = parseInt(value);
-            } else if (field === 'duration') {
-              filteredData[field] = parseFloat(value);
-            } else {
-              filteredData[field] = value;
-            }
+      await delay(350);
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // Only include Updateable fields plus Id
+      const updateableFields = ['Name', 'Tags', 'Owner', 'duration', 'date', 'description', 'task_id', 'user_id'];
+      const filteredData = { Id: id };
+      
+      updateableFields.forEach(field => {
+        if (entryData[field] !== undefined) {
+          // Convert string IDs to integers for lookup fields
+          if ((field === 'task_id' || field === 'user_id') && typeof entryData[field] === 'string') {
+            filteredData[field] = parseInt(entryData[field]);
+          } else {
+            filteredData[field] = entryData[field];
           }
         }
       });
@@ -161,15 +156,14 @@ class TimeEntryService {
       const params = {
         records: [filteredData]
       };
-      
-      const response = await this.apperClient.updateRecord(this.tableName, params);
+
+      const response = await apperClient.updateRecord('time_entry', params);
       
       if (!response.success) {
         console.error(response.message);
-        toast.error(response.message);
         throw new Error(response.message);
       }
-      
+
       if (response.results) {
         const successfulUpdates = response.results.filter(result => result.success);
         const failedUpdates = response.results.filter(result => !result.success);
@@ -179,59 +173,122 @@ class TimeEntryService {
           
           failedUpdates.forEach(record => {
             record.errors?.forEach(error => {
-              toast.error(`${error.fieldLabel}: ${error.message}`);
+              throw new Error(`${error.fieldLabel}: ${error.message}`);
             });
-            if (record.message) toast.error(record.message);
+            if (record.message) throw new Error(record.message);
           });
         }
         
-        if (successfulUpdates.length > 0) {
-          return successfulUpdates[0].data;
-        }
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
-      
-      throw new Error('No records updated');
     } catch (error) {
       console.error("Error updating time entry:", error);
       throw error;
     }
-  }
+  },
 
+  // Delete time entry
   async delete(id) {
     try {
-      const params = {
-        RecordIds: [parseInt(id)]
-      };
+      await delay(250);
       
-      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        RecordIds: [id]
+      };
+
+      const response = await apperClient.deleteRecord('time_entry', params);
       
       if (!response.success) {
         console.error(response.message);
-        toast.error(response.message);
-        return false;
+        throw new Error(response.message);
       }
-      
+
       if (response.results) {
-        const successfulDeletions = response.results.filter(result => result.success);
         const failedDeletions = response.results.filter(result => !result.success);
         
         if (failedDeletions.length > 0) {
           console.error(`Failed to delete ${failedDeletions.length} records:${failedDeletions}`);
           
           failedDeletions.forEach(record => {
-            if (record.message) toast.error(record.message);
+            if (record.message) throw new Error(record.message);
           });
         }
         
-        return successfulDeletions.length > 0;
+        return true;
       }
-      
-      return false;
     } catch (error) {
       console.error("Error deleting time entry:", error);
       throw error;
     }
-  }
-}
+  },
 
-export default new TimeEntryService();
+  // Get time entries by task
+  async getByTask(taskId) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "task_id",
+            operator: "EqualTo",
+            values: [parseInt(taskId)]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching time entries by task:", error);
+      throw error;
+    }
+  },
+
+  // Get time entries by user
+  async getByUser(userId) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "user_id",
+            operator: "EqualTo",
+            values: [parseInt(userId)]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching time entries by user:", error);
+      throw error;
+    }
+  },
+
+  // Get time entries by date range
+  async getByDateRange(startDate, endDate) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "date",
+            operator: "GreaterThanOrEqualTo",
+            values: [startDate]
+          },
+          {
+            fieldName: "date",
+            operator: "LessThanOrEqualTo",
+            values: [endDate]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching time entries by date range:", error);
+      throw error;
+    }
+  }
+};
+
+export default timeEntryService;

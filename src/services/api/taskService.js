@@ -1,53 +1,63 @@
-import { toast } from 'react-toastify';
+// ApperClient service for tasks
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-class TaskService {
-  constructor() {
-    const { ApperClient } = window.ApperSDK;
-    this.apperClient = new ApperClient({
-      apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
-      apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
-    });
-    this.tableName = 'task';
-    this.updateableFields = ['Name', 'user_story_id', 'project_id', 'title', 'description', 'assignee', 'status', 'deadline', 'priority', 'time_logged'];
-    this.allFields = ['Name', 'Tags', 'Owner', 'CreatedOn', 'CreatedBy', 'ModifiedOn', 'ModifiedBy', 'user_story_id', 'project_id', 'title', 'description', 'assignee', 'status', 'deadline', 'priority', 'time_logged'];
-  }
-
-  async getAll() {
+export const taskService = {
+  // Get all tasks
+  async getAll(params = {}) {
     try {
-      const params = {
-        fields: this.allFields,
-        orderBy: [{
-          fieldName: "CreatedOn",
-          SortType: "DESC"
-        }]
+      await delay(300);
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // All fields for task table (including system fields for display)
+      const allFields = [
+        'Name', 'Tags', 'Owner', 'CreatedOn', 'CreatedBy', 'ModifiedOn', 'ModifiedBy',
+        'user_story_id', 'project_id', 'title', 'description', 'assignee', 'status', 'deadline', 'priority', 'time_logged'
+      ];
+
+      const queryParams = {
+        fields: allFields,
+        ...params
       };
+
+      const response = await apperClient.fetchRecords('task', queryParams);
       
-      const response = await this.apperClient.fetchRecords(this.tableName, params);
-      
-      if (!response.success) {
-        console.error(response.message);
-        toast.error(response.message);
+      if (!response || !response.data) {
         return [];
       }
       
-      return response.data || [];
+      return response.data;
     } catch (error) {
       console.error("Error fetching tasks:", error);
       throw error;
     }
-  }
+  },
 
+  // Get task by ID
   async getById(id) {
     try {
-      const params = {
-        fields: this.allFields
-      };
+      await delay(200);
       
-      const response = await this.apperClient.getRecordById(this.tableName, id, params);
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const allFields = [
+        'Name', 'Tags', 'Owner', 'CreatedOn', 'CreatedBy', 'ModifiedOn', 'ModifiedBy',
+        'user_story_id', 'project_id', 'title', 'description', 'assignee', 'status', 'deadline', 'priority', 'time_logged'
+      ];
+
+      const params = { fields: allFields };
+      const response = await apperClient.getRecordById('task', id, params);
       
-      if (!response.success) {
-        console.error(response.message);
-        throw new Error(response.message);
+      if (!response || !response.data) {
+        throw new Error('Task not found');
       }
       
       return response.data;
@@ -55,36 +65,30 @@ class TaskService {
       console.error(`Error fetching task with ID ${id}:`, error);
       throw error;
     }
-  }
+  },
 
+  // Create new task (only Updateable fields)
   async create(taskData) {
     try {
-      // Filter to only include updateable fields
+      await delay(400);
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // Only include Updateable fields
+      const updateableFields = ['Name', 'Tags', 'Owner', 'user_story_id', 'project_id', 'title', 'description', 'assignee', 'status', 'deadline', 'priority', 'time_logged'];
       const filteredData = {};
-      this.updateableFields.forEach(field => {
-        if (taskData.hasOwnProperty(field) || 
-            (field === 'Name' && taskData.hasOwnProperty('title')) ||
-            (field === 'user_story_id' && taskData.hasOwnProperty('userStoryId')) ||
-            (field === 'project_id' && taskData.hasOwnProperty('projectId')) ||
-            (field === 'time_logged' && !taskData.hasOwnProperty('time_logged'))) {
-          
-          if (field === 'Name' && taskData.hasOwnProperty('title')) {
-            filteredData[field] = taskData.title;
-          } else if (field === 'user_story_id' && taskData.hasOwnProperty('userStoryId')) {
-            filteredData[field] = parseInt(taskData.userStoryId);
-          } else if (field === 'project_id' && taskData.hasOwnProperty('projectId')) {
-            filteredData[field] = parseInt(taskData.projectId);
-          } else if (field === 'time_logged' && !taskData.hasOwnProperty('time_logged')) {
-            filteredData[field] = 0.0;
-          } else if (field === 'deadline' && taskData.hasOwnProperty('deadline')) {
-            filteredData[field] = new Date(taskData.deadline).toISOString();
-          } else if (taskData.hasOwnProperty(field)) {
-            const value = taskData[field];
-            if (field === 'user_story_id' || field === 'project_id') {
-              filteredData[field] = parseInt(value);
-            } else {
-              filteredData[field] = value;
-            }
+      
+      updateableFields.forEach(field => {
+        if (taskData[field] !== undefined) {
+          // Convert string IDs to integers for lookup fields
+          if ((field === 'user_story_id' || field === 'project_id') && typeof taskData[field] === 'string') {
+            filteredData[field] = parseInt(taskData[field]);
+          } else {
+            filteredData[field] = taskData[field];
           }
         }
       });
@@ -92,15 +96,14 @@ class TaskService {
       const params = {
         records: [filteredData]
       };
-      
-      const response = await this.apperClient.createRecord(this.tableName, params);
+
+      const response = await apperClient.createRecord('task', params);
       
       if (!response.success) {
         console.error(response.message);
-        toast.error(response.message);
         throw new Error(response.message);
       }
-      
+
       if (response.results) {
         const successfulRecords = response.results.filter(result => result.success);
         const failedRecords = response.results.filter(result => !result.success);
@@ -110,49 +113,42 @@ class TaskService {
           
           failedRecords.forEach(record => {
             record.errors?.forEach(error => {
-              toast.error(`${error.fieldLabel}: ${error.message}`);
+              throw new Error(`${error.fieldLabel}: ${error.message}`);
             });
-            if (record.message) toast.error(record.message);
+            if (record.message) throw new Error(record.message);
           });
         }
         
-        if (successfulRecords.length > 0) {
-          return successfulRecords[0].data;
-        }
+        return successfulRecords.length > 0 ? successfulRecords[0].data : null;
       }
-      
-      throw new Error('No records created');
     } catch (error) {
       console.error("Error creating task:", error);
       throw error;
     }
-  }
+  },
 
+  // Update task (only Updateable fields)
   async update(id, taskData) {
     try {
-      // Filter to only include updateable fields
-      const filteredData = { Id: parseInt(id) };
-      this.updateableFields.forEach(field => {
-        if (taskData.hasOwnProperty(field) || 
-            (field === 'Name' && taskData.hasOwnProperty('title')) ||
-            (field === 'user_story_id' && taskData.hasOwnProperty('userStoryId')) ||
-            (field === 'project_id' && taskData.hasOwnProperty('projectId'))) {
-          
-          if (field === 'Name' && taskData.hasOwnProperty('title')) {
-            filteredData[field] = taskData.title;
-          } else if (field === 'user_story_id' && taskData.hasOwnProperty('userStoryId')) {
-            filteredData[field] = parseInt(taskData.userStoryId);
-          } else if (field === 'project_id' && taskData.hasOwnProperty('projectId')) {
-            filteredData[field] = parseInt(taskData.projectId);
-          } else if (field === 'deadline' && taskData.hasOwnProperty('deadline')) {
-            filteredData[field] = new Date(taskData.deadline).toISOString();
-          } else if (taskData.hasOwnProperty(field)) {
-            const value = taskData[field];
-            if (field === 'user_story_id' || field === 'project_id') {
-              filteredData[field] = parseInt(value);
-            } else {
-              filteredData[field] = value;
-            }
+      await delay(350);
+      
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      // Only include Updateable fields plus Id
+      const updateableFields = ['Name', 'Tags', 'Owner', 'user_story_id', 'project_id', 'title', 'description', 'assignee', 'status', 'deadline', 'priority', 'time_logged'];
+      const filteredData = { Id: id };
+      
+      updateableFields.forEach(field => {
+        if (taskData[field] !== undefined) {
+          // Convert string IDs to integers for lookup fields
+          if ((field === 'user_story_id' || field === 'project_id') && typeof taskData[field] === 'string') {
+            filteredData[field] = parseInt(taskData[field]);
+          } else {
+            filteredData[field] = taskData[field];
           }
         }
       });
@@ -160,15 +156,14 @@ class TaskService {
       const params = {
         records: [filteredData]
       };
-      
-      const response = await this.apperClient.updateRecord(this.tableName, params);
+
+      const response = await apperClient.updateRecord('task', params);
       
       if (!response.success) {
         console.error(response.message);
-        toast.error(response.message);
         throw new Error(response.message);
       }
-      
+
       if (response.results) {
         const successfulUpdates = response.results.filter(result => result.success);
         const failedUpdates = response.results.filter(result => !result.success);
@@ -178,59 +173,185 @@ class TaskService {
           
           failedUpdates.forEach(record => {
             record.errors?.forEach(error => {
-              toast.error(`${error.fieldLabel}: ${error.message}`);
+              throw new Error(`${error.fieldLabel}: ${error.message}`);
             });
-            if (record.message) toast.error(record.message);
+            if (record.message) throw new Error(record.message);
           });
         }
         
-        if (successfulUpdates.length > 0) {
-          return successfulUpdates[0].data;
-        }
+        return successfulUpdates.length > 0 ? successfulUpdates[0].data : null;
       }
-      
-      throw new Error('No records updated');
     } catch (error) {
       console.error("Error updating task:", error);
       throw error;
     }
-  }
+  },
 
+  // Delete task
   async delete(id) {
     try {
-      const params = {
-        RecordIds: [parseInt(id)]
-      };
+      await delay(250);
       
-      const response = await this.apperClient.deleteRecord(this.tableName, params);
+      const { ApperClient } = window.ApperSDK;
+      const apperClient = new ApperClient({
+        apperProjectId: import.meta.env.VITE_APPER_PROJECT_ID,
+        apperPublicKey: import.meta.env.VITE_APPER_PUBLIC_KEY
+      });
+
+      const params = {
+        RecordIds: [id]
+      };
+
+      const response = await apperClient.deleteRecord('task', params);
       
       if (!response.success) {
         console.error(response.message);
-        toast.error(response.message);
-        return false;
+        throw new Error(response.message);
       }
-      
+
       if (response.results) {
-        const successfulDeletions = response.results.filter(result => result.success);
         const failedDeletions = response.results.filter(result => !result.success);
         
         if (failedDeletions.length > 0) {
           console.error(`Failed to delete ${failedDeletions.length} records:${failedDeletions}`);
           
           failedDeletions.forEach(record => {
-            if (record.message) toast.error(record.message);
+            if (record.message) throw new Error(record.message);
           });
         }
         
-        return successfulDeletions.length > 0;
+        return true;
       }
-      
-      return false;
     } catch (error) {
       console.error("Error deleting task:", error);
       throw error;
     }
-  }
-}
+  },
 
-export default new TaskService();
+  // Get tasks by project
+  async getByProject(projectId) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "project_id",
+            operator: "EqualTo",
+            values: [parseInt(projectId)]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching tasks by project:", error);
+      throw error;
+    }
+  },
+
+  // Get tasks by status
+  async getByStatus(status) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "status",
+            operator: "ExactMatch",
+            values: [status]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching tasks by status:", error);
+      throw error;
+    }
+  },
+
+  // Get tasks by user story
+  async getByUserStory(userStoryId) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "user_story_id",
+            operator: "EqualTo",
+            values: [parseInt(userStoryId)]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching tasks by user story:", error);
+      throw error;
+    }
+  },
+
+  // Search tasks
+  async search(query) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "title",
+            operator: "Contains",
+            values: [query]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error searching tasks:", error);
+      throw error;
+    }
+  },
+
+  // Update status
+  async updateStatus(id, status) {
+    return this.update(id, { status });
+  },
+
+  // Get tasks by assignee
+  async getByAssignee(assignee) {
+    try {
+      const params = {
+        where: [
+          {
+            fieldName: "assignee",
+            operator: "ExactMatch",
+            values: [assignee]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching tasks by assignee:", error);
+      throw error;
+    }
+  },
+
+  // Get overdue tasks
+  async getOverdue() {
+    try {
+      const now = new Date().toISOString();
+      const params = {
+        where: [
+          {
+            fieldName: "deadline",
+            operator: "LessThan",
+            values: [now]
+          },
+          {
+            fieldName: "status",
+            operator: "NotEqualTo",
+            values: ["completed"]
+          }
+        ]
+      };
+      return await this.getAll(params);
+    } catch (error) {
+      console.error("Error fetching overdue tasks:", error);
+      throw error;
+    }
+}
+};
+
+export default taskService;
