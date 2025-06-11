@@ -1,7 +1,7 @@
 [
-  {
+{
     "id": "1",
-    "name": "TaskForge Platform Development",
+    "name": "Visionware Platform Development",
     "description": "Building a comprehensive project management platform for development teams",
     "scope": "Full-stack web application with real-time collaboration features",
     "goals": [
