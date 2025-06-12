@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { projectService, taskService, userStoryService, timeEntryService } from '@/services';
+import { format, startOfWeek, endOfWeek, eachDayOfInterval, parseISO } from 'date-fns';
+import { projectService, taskService, userStoryService, timeEntryService, userService } from '@/services';
 import ApperIcon from '@/components/ApperIcon';
 import Card from '@/components/molecules/Card';
 import StatCard from '@/components/molecules/StatCard';
@@ -20,29 +21,32 @@ const HomePage = () => {
     projects: [],
     tasks: [],
     userStories: [],
-    timeEntries: []
+    timeEntries: [],
+    users: []
   });
 
   useEffect(() => {
     loadDashboardData();
   }, []);
 
-  const loadDashboardData = async () => {
+const loadDashboardData = async () => {
     setLoading(true);
     setError(null);
     try {
-      const [projects, tasks, userStories, timeEntries] = await Promise.all([
+      const [projects, tasks, userStories, timeEntries, users] = await Promise.all([
         projectService.getAll(),
         taskService.getAll(),
         userStoryService.getAll(),
-        timeEntryService.getAll()
+        timeEntryService.getAll(),
+        userService.getAll()
       ]);
 
       setDashboardData({
         projects: projects || [],
         tasks: tasks || [],
         userStories: userStories || [],
-        timeEntries: timeEntries || []
+        timeEntries: timeEntries || [],
+        users: users || []
       });
     } catch (err) {
       console.error('Dashboard load error:', err);
@@ -53,14 +57,31 @@ const HomePage = () => {
     }
   };
 
-  // Calculate statistics
+// Calculate statistics with enhanced metrics
   const getStats = () => {
-    const { projects, tasks, userStories } = dashboardData;
+    const { projects, tasks, userStories, timeEntries, users } = dashboardData;
     
     const activeProjects = projects.filter(p => p.status === 'active').length;
     const activeTasks = tasks.filter(t => t.status !== 'completed').length;
     const completedTasks = tasks.filter(t => t.status === 'completed').length;
     const totalStories = userStories.length;
+    const activeUsers = users.filter(u => u.status === 'active').length;
+
+    // Calculate this week's time entries
+    const now = new Date();
+    const weekStart = startOfWeek(now);
+    const weekEnd = endOfWeek(now);
+    
+    const thisWeekEntries = timeEntries.filter(entry => {
+      try {
+        const entryDate = parseISO(entry.date);
+        return entryDate >= weekStart && entryDate <= weekEnd;
+      } catch {
+        return false;
+      }
+    });
+    
+    const thisWeekHours = thisWeekEntries.reduce((sum, entry) => sum + (entry.duration || 0), 0);
 
     return [
       { 
@@ -78,18 +99,18 @@ const HomePage = () => {
         change: `${completedTasks} completed`
       },
       { 
-        title: 'User Stories', 
-        value: totalStories, 
-        icon: 'BookOpen', 
+        title: 'Team Members', 
+        value: activeUsers, 
+        icon: 'Users', 
         color: 'text-purple-600', 
-        change: userStories.filter(s => s.status === 'in-progress').length + ' in progress'
+        change: userStories.filter(s => s.status === 'in-progress').length + ' stories in progress'
       },
       { 
-        title: 'Time Logged', 
-        value: Math.round(dashboardData.timeEntries.reduce((sum, entry) => sum + (entry.duration || 0), 0)) + 'h', 
+        title: 'This Week', 
+        value: Math.round(thisWeekHours) + 'h', 
         icon: 'Clock', 
         color: 'text-yellow-600', 
-        change: `${dashboardData.timeEntries.length} entries`
+        change: `${thisWeekEntries.length} time entries`
       }
     ];
   };
@@ -178,7 +199,110 @@ const HomePage = () => {
         },
         yaxis: {
           max: 100
+}
+      }
+    };
+  };
+
+  // Weekly timesheet data
+  const getWeeklyTimesheet = () => {
+    const { timeEntries } = dashboardData;
+    const now = new Date();
+    const weekStart = startOfWeek(now);
+    const weekDays = eachDayOfInterval({ start: weekStart, end: endOfWeek(now) });
+    
+    const dailyHours = weekDays.map(day => {
+      const dayEntries = timeEntries.filter(entry => {
+        try {
+          const entryDate = parseISO(entry.date);
+          return format(entryDate, 'yyyy-MM-dd') === format(day, 'yyyy-MM-dd');
+        } catch {
+          return false;
         }
+      });
+      
+      return {
+        day: format(day, 'EEE'),
+hours: dayEntries.reduce((sum, entry) => sum + (entry.duration || 0), 0)
+      };
+    });
+
+    return {
+      series: [{
+        name: 'Hours Logged',
+        data: dailyHours.map(d => Math.round(d.hours * 10) / 10)
+      }],
+      options: {
+        chart: {
+          type: 'column',
+          height: 300,
+          toolbar: { show: false }
+        },
+        xaxis: {
+          categories: dailyHours.map(d => d.day)
+        },
+        colors: ['#8B5CF6'],
+        plotOptions: {
+          bar: {
+            borderRadius: 4,
+            columnWidth: '60%'
+          }
+        },
+        dataLabels: { enabled: false },
+        grid: { strokeDashArray: 3 }
+      }
+    };
+  };
+
+  // Team performance metrics
+  const getTeamPerformance = () => {
+    const { users, timeEntries, tasks } = dashboardData;
+    
+    return users.slice(0, 6).map(user => {
+      const userTimeEntries = timeEntries.filter(entry => parseInt(entry.user_id) === user.Id);
+      const userTasks = tasks.filter(task => task.assignee === user.Name || parseInt(task.Owner) === user.Id);
+      const completedTasks = userTasks.filter(task => task.status === 'completed').length;
+      const totalHours = userTimeEntries.reduce((sum, entry) => sum + (entry.duration || 0), 0);
+      
+      return {
+        ...user,
+        hoursLogged: Math.round(totalHours * 10) / 10,
+        tasksCompleted: completedTasks,
+        activeTasks: userTasks.filter(task => task.status !== 'completed').length
+      };
+    });
+  };
+
+  // Project time allocation
+  const getProjectTimeAllocation = () => {
+    const { projects, timeEntries, tasks } = dashboardData;
+    
+    const projectHours = projects.slice(0, 6).map(project => {
+      const projectTasks = tasks.filter(t => parseInt(t.project_id) === parseInt(project.Id));
+      const projectTime = timeEntries.filter(entry => 
+        projectTasks.some(task => parseInt(task.Id) === parseInt(entry.task_id))
+      ).reduce((sum, entry) => sum + (entry.duration || 0), 0);
+      
+      return {
+        name: project.Name?.substring(0, 12) + (project.Name?.length > 12 ? '...' : '') || 'Unnamed',
+        hours: Math.round(projectTime * 10) / 10
+      };
+    }).filter(p => p.hours > 0);
+
+    return {
+      series: projectHours.map(p => p.hours),
+      options: {
+        chart: { type: 'pie', height: 300 },
+        labels: projectHours.map(p => p.name),
+        colors: ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#EC4899'],
+        legend: { position: 'bottom' },
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: { width: 280 },
+            legend: { position: 'bottom' }
+          }
+        }]
       }
     };
   };
@@ -203,7 +327,7 @@ const HomePage = () => {
         },
         status: project.status || 'active'
       };
-    });
+});
   };
 
   const handleQuickAction = (action) => {
@@ -240,11 +364,14 @@ const HomePage = () => {
         icon="AlertCircle"
       />
     );
-  }
+}
 
   const stats = getStats();
   const taskDistribution = getTaskDistribution();
   const projectProgress = getProjectProgress();
+  const weeklyTimesheet = getWeeklyTimesheet();
+  const teamPerformance = getTeamPerformance();
+  const projectTimeAllocation = getProjectTimeAllocation();
   const recentProjects = getRecentProjects();
 
   return (
@@ -256,7 +383,7 @@ const HomePage = () => {
         className="mb-8"
       >
         <h1 className="text-3xl font-bold text-surface-900 mb-2">Project Dashboard</h1>
-        <p className="text-surface-600">Welcome back! Here's what's happening with your projects.</p>
+        <p className="text-surface-600">Welcome back! Here's what's happening with your projects and team.</p>
       </motion.div>
 
       {/* Stats Overview */}
@@ -264,9 +391,9 @@ const HomePage = () => {
         {stats.map((stat, index) => (
           <StatCard key={stat.title} {...stat} index={index} />
         ))}
-      </div>
+</div>
 
-      {/* Charts Section */}
+      {/* Charts Section - Top Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card
           animate
@@ -298,6 +425,33 @@ const HomePage = () => {
           animateProps={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.5 }}
         >
+          <h3 className="text-lg font-semibold text-surface-900 mb-4">Weekly Timesheet</h3>
+          {dashboardData.timeEntries.length > 0 ? (
+            <ChartWrapper
+              type="bar"
+              series={weeklyTimesheet.series}
+              options={weeklyTimesheet.options}
+              height={300}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-64 text-surface-500">
+              <div className="text-center">
+                <ApperIcon name="Clock" className="w-12 h-12 mx-auto mb-2" />
+                <p>No time entries this week</p>
+              </div>
+            </div>
+          )}
+        </Card>
+      </div>
+
+      {/* Charts Section - Second Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <Card
+          animate
+          initial={{ opacity: 0, x: -20 }}
+          animateProps={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.6 }}
+        >
           <h3 className="text-lg font-semibold text-surface-900 mb-4">Project Progress</h3>
           {dashboardData.projects.length > 0 ? (
             <ChartWrapper
@@ -315,14 +469,86 @@ const HomePage = () => {
             </div>
           )}
         </Card>
+
+        <Card
+          animate
+          initial={{ opacity: 0, x: 20 }}
+          animateProps={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.7 }}
+        >
+          <h3 className="text-lg font-semibold text-surface-900 mb-4">Project Time Allocation</h3>
+          {projectTimeAllocation.series.length > 0 ? (
+            <ChartWrapper
+              type="pie"
+              series={projectTimeAllocation.series}
+              options={projectTimeAllocation.options}
+              height={300}
+            />
+          ) : (
+            <div className="flex items-center justify-center h-64 text-surface-500">
+              <div className="text-center">
+                <ApperIcon name="PieChart" className="w-12 h-12 mx-auto mb-2" />
+                <p>No time data available</p>
+              </div>
+            </div>
+          )}
+        </Card>
       </div>
+
+      {/* Team Overview */}
+      <Card
+        animate
+        initial={{ opacity: 0, y: 20 }}
+        animateProps={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.8 }}
+      >
+        <h3 className="text-lg font-semibold text-surface-900 mb-4">Team Overview</h3>
+        {teamPerformance.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {teamPerformance.map((member) => (
+              <div key={member.Id} className="bg-surface-50 rounded-lg p-4 border border-surface-200">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                    <span className="text-primary font-semibold text-sm">
+                      {member.Name?.split(' ').map(n => n[0]).join('') || 'U'}
+                    </span>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-surface-900">{member.Name}</h4>
+                    <p className="text-sm text-surface-600">{member.role}</p>
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-surface-600">Hours Logged:</span>
+                    <span className="font-medium text-surface-900">{member.hoursLogged}h</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-surface-600">Tasks Completed:</span>
+                    <span className="font-medium text-surface-900">{member.tasksCompleted}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-surface-600">Active Tasks:</span>
+                    <span className="font-medium text-surface-900">{member.activeTasks}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-8 text-surface-500">
+            <ApperIcon name="Users" className="w-12 h-12 mx-auto mb-2" />
+            <p>No team members available</p>
+          </div>
+        )}
+</Card>
 
       {/* Recent Projects */}
       <Card
         animate
         initial={{ opacity: 0, y: 20 }}
         animateProps={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.6 }}
+        transition={{ delay: 0.9 }}
       >
         <h3 className="text-lg font-semibold text-surface-900 mb-4">Recent Projects</h3>
         {recentProjects.length > 0 ? (
@@ -360,14 +586,14 @@ const HomePage = () => {
             </Button>
           </div>
         )}
-      </Card>
+</Card>
 
       {/* Quick Actions */}
       <Card
         animate
         initial={{ opacity: 0, y: 20 }}
         animateProps={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.7 }}
+        transition={{ delay: 1.0 }}
       >
         <h3 className="text-lg font-semibold text-surface-900 mb-4">Quick Actions</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">

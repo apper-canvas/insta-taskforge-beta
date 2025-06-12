@@ -1,0 +1,122 @@
+[
+  {
+    "Id": 1,
+    "Name": "John Smith",
+    "email": "john.smith@company.com",
+    "role": "Senior Developer",
+    "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+    "department": "Engineering",
+    "status": "active",
+    "joining_date": "2023-01-15T00:00:00.000Z",
+    "skills": "React,Node.js,Python",
+    "location": "New York"
+  },
+  {
+    "Id": 2,
+    "Name": "Sarah Johnson",
+    "email": "sarah.johnson@company.com",
+    "role": "UX Designer",
+    "avatar": "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face",
+    "department": "Design",
+    "status": "active",
+    "joining_date": "2023-02-20T00:00:00.000Z",
+    "skills": "Figma,Adobe XD,Sketch",
+    "location": "San Francisco"
+  },
+  {
+    "Id": 3,
+    "Name": "Michael Chen",
+    "email": "michael.chen@company.com",
+    "role": "Project Manager",
+    "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+    "department": "Management",
+    "status": "active",
+    "joining_date": "2022-11-10T00:00:00.000Z",
+    "skills": "Agile,Scrum,Leadership",
+    "location": "Austin"
+  },
+  {
+    "Id": 4,
+    "Name": "Emily Davis",
+    "email": "emily.davis@company.com",
+    "role": "Frontend Developer",
+    "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+    "department": "Engineering",
+    "status": "active",
+    "joining_date": "2023-03-05T00:00:00.000Z",
+    "skills": "React,Vue.js,TypeScript",
+    "location": "Seattle"
+  },
+  {
+    "Id": 5,
+    "Name": "David Wilson",
+    "email": "david.wilson@company.com",
+    "role": "Backend Developer",
+    "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
+    "department": "Engineering",
+    "status": "active",
+    "joining_date": "2023-01-25T00:00:00.000Z",
+    "skills": "Java,Spring Boot,AWS",
+    "location": "Chicago"
+  },
+  {
+    "Id": 6,
+    "Name": "Lisa Martinez",
+    "email": "lisa.martinez@company.com",
+    "role": "QA Engineer",
+    "avatar": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=100&h=100&fit=crop&crop=face",
+    "department": "Quality Assurance",
+    "status": "active",
+    "joining_date": "2022-12-12T00:00:00.000Z",
+    "skills": "Selenium,Cypress,Jest",
+    "location": "Los Angeles"
+  },
+  {
+    "Id": 7,
+    "Name": "Alex Thompson",
+    "email": "alex.thompson@company.com",
+    "role": "DevOps Engineer",
+    "avatar": "https://images.unsplash.com/photo-1463453091185-61582044d556?w=100&h=100&fit=crop&crop=face",
+    "department": "Infrastructure",
+    "status": "active",
+    "joining_date": "2023-02-08T00:00:00.000Z",
+    "skills": "Docker,Kubernetes,CI/CD",
+    "location": "Denver"
+  },
+  {
+    "Id": 8,
+    "Name": "Rachel Green",
+    "email": "rachel.green@company.com",
+    "role": "Product Manager",
+    "avatar": "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?w=100&h=100&fit=crop&crop=face",
+    "department": "Product",
+    "status": "active",
+    "joining_date": "2022-10-30T00:00:00.000Z",
+    "skills": "Product Strategy,Analytics,User Research",
+    "location": "Boston"
+  },
+  {
+    "Id": 9,
+    "Name": "James Rodriguez",
+    "email": "james.rodriguez@company.com",
+    "role": "Data Scientist",
+    "avatar": "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=100&h=100&fit=crop&crop=face",
+    "department": "Data Science",
+    "status": "active",
+    "joining_date": "2023-01-03T00:00:00.000Z",
+    "skills": "Python,Machine Learning,SQL",
+    "location": "Portland"
+  },
+  {
+    "Id": 10,
+    "Name": "Amanda Foster",
+    "email": "amanda.foster@company.com",
+    "role": "Marketing Specialist",
+    "avatar": "https://images.unsplash.com/photo-1464375117522-1311d6a5b81f?w=100&h=100&fit=crop&crop=face",
+    "department": "Marketing",
+    "status": "active",
+    "joining_date": "2023-02-14T00:00:00.000Z",
+    "skills": "Digital Marketing,Content Creation,SEO",
+    "location": "Miami"
+  }
+]
